@@ -36,7 +36,8 @@ def get_data(track_id, car_id):
 
 def save_data(car_id):
     tracks = get_all_tracks()
-    with open(save_directory + get_car_name(car_id) + ".csv", "w+", encoding="utf-16", newline="") as file:
+    car_name = get_car_name(car_id)
+    with open(save_directory + car_name + ".csv", "w+", encoding="utf-16", newline="") as file:
         writer = csv.writer(file, delimiter="\t")
         writer.writerow(header)
         n = 1
@@ -44,7 +45,7 @@ def save_data(car_id):
             data = [n] + [t[0]] + get_data(t[1], car_id)
             if len(data) == 4:
                 writer.writerow(data)
-                print(t[0] + " data saved")
+                print("Cars: " + car_name + " on " + t[0] + " data saved")
                 n += 1
 
 
