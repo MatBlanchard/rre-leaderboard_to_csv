@@ -3,7 +3,7 @@ import csv
 import json
 
 save_directory = "c:/Users/matbl.DESKTOP-SE0KTRR/OneDrive/Bureau/RRE/" #Change - the directory you want to save your data
-car_class = 5818 #Change - the car you want to save
+car_class = [8257, 5818] #Change - the cars you want to save
 driver_name = 'Mathieu Blanchard' #Change - the pilot you want to save
 header = ["id", "track_name", "wr", "lap_time"]
 
@@ -16,7 +16,7 @@ def get_lap_time_sec(lap_time):
 
 
 def get_data(track_id, car_id):
-    url = "https://game.raceroom.com/leaderboard/listing/0?track=" + str(track_id) + "&car_class=" + str(car_id)
+    url = "https://game.raceroom.com/leaderboard/listing/0?start=0&count=200&track=" + str(track_id) + "&car_class=" + str(car_id)
     page = requests.get(url, headers={"X-Requested-With": "XMLHttpRequest"})
     if page.ok:
         file = json.loads(page.text)
@@ -69,4 +69,21 @@ def get_car_name(car_id):
         return file['context']['c']['results'][0]['car_class']['car']['name']
 
 
-save_data(car_class)
+def get_pilot_by_id(pilot_id):
+    url = "https://game.raceroom.com/utils/user-info/" + str(pilot_id)
+    page = requests.get(url)
+    if page.ok:
+        file = json.loads(page.text)
+        return file['name']
+
+
+def get_pilot_by_username(pilot_username):
+    url = "https://game.raceroom.com/utils/user-info/" + pilot_username
+    page = requests.get(url)
+    if page.ok:
+        file = json.loads(page.text)
+        return file['name']
+
+
+for car in car_class:
+    save_data(car)
