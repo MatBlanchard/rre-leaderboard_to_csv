@@ -10,6 +10,7 @@ save_directory = config.get('RRE', 'save_directory')
 car_class = ast.literal_eval(config.get('RRE', 'car_id_list'))
 driver_name = config.get('RRE', 'player')
 header = ast.literal_eval(config.get('RRE', 'header'))
+count = 200
 
 
 def get_lap_time_sec(lap_time):
@@ -20,7 +21,8 @@ def get_lap_time_sec(lap_time):
 
 
 def get_data(track_id, car_id):
-    url = "https://game.raceroom.com/leaderboard/listing/0?start=0&count=200&track=" + str(track_id) + "&car_class=" + str(car_id)
+    url = "https://game.raceroom.com/leaderboard/listing/0?start=0&count=" + \
+          str(count) + "&track=" + str(track_id) + "&car_class=" + str(car_id)
     page = requests.get(url, headers={"X-Requested-With": "XMLHttpRequest"})
     if page.ok:
         file = json.loads(page.text)
@@ -58,10 +60,10 @@ def get_all_tracks():
     if page.ok:
         results = {}
         file = json.loads(page.text)
-        tracks = file["tracks"]
-        for i in tracks:
-            track_name = tracks[i]['Name']
-            for j in tracks[i]['layouts']:
+        track_list = file["tracks"]
+        for i in track_list:
+            track_name = track_list[i]['Name']
+            for j in track_list[i]['layouts']:
                 results.update({track_name + " - " + j['Name']: j['Id']})
         return sorted(results.items(), key=lambda t: t[0])
 
