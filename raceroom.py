@@ -92,7 +92,6 @@ def get_pilot_by_username(pilot_username):
 
 if __name__ == "__main__":
     tracks = get_all_tracks()
-    print(header)
     try:
         for car in car_class:
             save_data(car)
