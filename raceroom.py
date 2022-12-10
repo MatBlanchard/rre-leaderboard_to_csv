@@ -1,11 +1,15 @@
+import ast
 import requests
 import csv
 import json
+import configparser
+config = configparser.RawConfigParser()
+config.read('raceroom.ini')
 
-save_directory = "c:/Users/matbl.DESKTOP-SE0KTRR/OneDrive/Bureau/RRE/" #Modify - the directory you want to save your data
-car_class = [8257, 5818, 10890] #Modify - the cars you want to save
-driver_name = 'Mathieu Blanchard' #Modify - the pilot you want to save
-header = ["N°", "Nom du circuit", "World record", "Mon temps"] #Modify - the header you want for your csv file
+save_directory = config.get('RRE', 'save_directory')
+car_class = ast.literal_eval(config.get('RRE', 'car_id_list'))
+driver_name = config.get('RRE', 'player')
+header = ast.literal_eval(config.get('RRE', 'header'))
 
 
 def get_lap_time_sec(lap_time):
@@ -88,8 +92,11 @@ def get_pilot_by_username(pilot_username):
 
 if __name__ == "__main__":
     tracks = get_all_tracks()
+    print(car_class)
+    print(type(car_class))
     try:
         for car in car_class:
+            print(car)
             save_data(car)
     except KeyboardInterrupt:
         print("\nProgram interrupted")

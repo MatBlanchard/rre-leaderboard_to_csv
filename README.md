@@ -12,18 +12,8 @@ git clone https://github.com/MatBlanchard/rre-leaderboard_to_csv.git
 ```
 cd rre-leaderboard_to_csv
 ```
-- Create a new virtual environnement :
+- Modify the raceroom.ini file with your parameters:
+- Launch the script using or double-click on the raceroom.bat file:
 ```
-python -m venv env
+raceroom
 ```
-- Activate it.
-```
-env\scripts\activate
-```
-- Install packages.
-```
-pip install -r requirements.txt
-```
-- Launch the script using:
-```
-py raceroom.py
