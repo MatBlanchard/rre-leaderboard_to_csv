@@ -1,5 +1,6 @@
 # Leaderboard-to-csv
-It's a python script that can import data from the leaderboard to a csv file
+It's a python script that can import data from the leaderboard to a csv file.
+The script will automatically get the world record and the laptime of the player you specified on the .ini file.
 ## Installation:
 - install Python.
 
