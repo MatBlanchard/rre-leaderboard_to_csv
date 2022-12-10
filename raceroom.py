@@ -2,17 +2,17 @@ import requests
 import csv
 import json
 
-save_directory = "c:/Users/matbl.DESKTOP-SE0KTRR/OneDrive/Bureau/RRE/" #Change - the directory you want to save your data
-car_class = [8257, 5818] #Change - the cars you want to save
-driver_name = 'Mathieu Blanchard' #Change - the pilot you want to save
-header = ["id", "track_name", "wr", "lap_time"]
+save_directory = "c:/Users/matbl.DESKTOP-SE0KTRR/OneDrive/Bureau/RRE/" #Modify - the directory you want to save your data
+car_class = [8257, 5818, 10890] #Modify - the cars you want to save
+driver_name = 'Mathieu Blanchard' #Modify - the pilot you want to save
+header = ["N°", "Nom du circuit", "World record", "Mon temps"] #Modify - the header you want for your csv file
 
 
 def get_lap_time_sec(lap_time):
     if len(lap_time) == 2:
-        return str(float(lap_time[0])*60 + float(lap_time[1])).replace('.', ',')
+        return '{:.3f}'.format(float(lap_time[0])*60 + float(lap_time[1])).replace('.', ',')
     else:
-        return str(float(lap_time[0])).replace('.', ',')
+        return '{:.3f}'.format(float(lap_time[0])).replace('.', ',')
 
 
 def get_data(track_id, car_id):
@@ -31,11 +31,11 @@ def get_data(track_id, car_id):
             if c['driver']['name'] == driver_name:
                 lap_time = c['laptime'].split('s')[0].split('m ')
                 lap_time = get_lap_time_sec(lap_time)
+                break
         return [wr, lap_time]
 
 
 def save_data(car_id):
-    tracks = get_all_tracks()
     car_name = get_car_name(car_id)
     with open(save_directory + car_name + ".csv", "w+", encoding="utf-16", newline="") as file:
         writer = csv.writer(file, delimiter="\t")
@@ -45,7 +45,7 @@ def save_data(car_id):
             data = [n] + [t[0]] + get_data(t[1], car_id)
             if len(data) == 4:
                 writer.writerow(data)
-                print("Cars: " + car_name + " on " + t[0] + " data saved")
+                print("Car: " + car_name + " | Track: " + t[0] + " saved successfully")
                 n += 1
 
 
@@ -86,5 +86,10 @@ def get_pilot_by_username(pilot_username):
         return file['name']
 
 
-for car in car_class:
-    save_data(car)
+if __name__ == "__main__":
+    tracks = get_all_tracks()
+    try:
+        for car in car_class:
+            save_data(car)
+    except KeyboardInterrupt:
+        print("\nProgram interrupted")
