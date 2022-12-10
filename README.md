@@ -20,7 +20,8 @@ car_id_list: [The ids of the cars you want to save]
 player: [The player name that made the laptimes you want to save]
 header: [The header of your csv file]
 ```
-- Launch the script using or double-click on the raceroom.bat file:
+- Launch the script using the following command:
 ```
 raceroom
 ```
+- Or double-click on the raceroom.bat file.
