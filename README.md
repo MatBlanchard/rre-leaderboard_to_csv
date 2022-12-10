@@ -5,7 +5,7 @@ The script will automatically get the world record and the laptime of the player
 - Install Python.
 
 https://www.python.org/downloads/
-- Launch the cmd, go to the repository of your choice and clone the git repository:
+- Launch the cmd, go to the repository of your choice and clone this git repository:
 ```
 git clone https://github.com/MatBlanchard/rre-leaderboard_to_csv.git
 ```
