@@ -2,7 +2,7 @@
 It's a python script that can import data from the leaderboard to a csv file.
 The script will automatically get the world record and the laptime of the player you specified on the .ini file.
 ## Installation:
-- install Python.
+- Install Python.
 
 https://www.python.org/downloads/
 - Launch the cmd, go to the repository of your choice and clone the git repository:
