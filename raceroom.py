@@ -4,7 +4,7 @@ import csv
 import json
 import configparser
 config = configparser.RawConfigParser()
-config.read('raceroom.ini')
+config.read('raceroom.ini', encoding='utf-8')
 
 save_directory = config.get('RRE', 'save_directory')
 car_class = ast.literal_eval(config.get('RRE', 'car_id_list'))
@@ -92,6 +92,7 @@ def get_pilot_by_username(pilot_username):
 
 if __name__ == "__main__":
     tracks = get_all_tracks()
+    print(header)
     try:
         for car in car_class:
             save_data(car)
