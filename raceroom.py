@@ -97,6 +97,7 @@ if __name__ == "__main__":
     try:
         for car in car_class:
             save_data(car)
+        print("All data saved successfully")
     except KeyboardInterrupt:
         print("Program interrupted")
     except PermissionError as e:
