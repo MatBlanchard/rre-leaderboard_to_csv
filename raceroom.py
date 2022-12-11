@@ -69,27 +69,10 @@ def get_all_tracks():
 
 
 def get_car_name(car_id):
-    url = "https://game.raceroom.com/leaderboard/listing/0?car_class=" + str(car_id)
-    page = requests.get(url, headers={"X-Requested-With": "XMLHttpRequest"})
+    page = requests.get("https://raw.githubusercontent.com/sector3studios/r3e-spectator-overlay/master/r3e-data.json")
     if page.ok:
         file = json.loads(page.text)
-        return file['context']['c']['results'][0]['car_class']['car']['name']
-
-
-def get_pilot_by_id(pilot_id):
-    url = "https://game.raceroom.com/utils/user-info/" + str(pilot_id)
-    page = requests.get(url)
-    if page.ok:
-        file = json.loads(page.text)
-        return file['name']
-
-
-def get_pilot_by_username(pilot_username):
-    url = "https://game.raceroom.com/utils/user-info/" + pilot_username
-    page = requests.get(url)
-    if page.ok:
-        file = json.loads(page.text)
-        return file['name']
+        return file['cars'][str(car_id)]['Name']
 
 
 if __name__ == "__main__":
