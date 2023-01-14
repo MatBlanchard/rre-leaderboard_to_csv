@@ -7,10 +7,10 @@ config = configparser.RawConfigParser()
 config.read('raceroom.ini', encoding='utf-8')
 
 save_directory = config.get('RRE', 'save_directory')
-car_class = ast.literal_eval(config.get('RRE', 'car_id_list'))
+car_ids = ast.literal_eval(config.get('RRE', 'car_id_list'))
 driver_name = config.get('RRE', 'player')
 header = ast.literal_eval(config.get('RRE', 'header'))
-count = 200
+count = 750
 
 
 def get_lap_time_sec(lap_time):
@@ -33,12 +33,15 @@ def get_data(track_id, car_id):
         wr = wr.split('s')[0].split('m ')
         wr = get_lap_time_sec(wr)
         lap_time = ""
+        i = 0
+        rank = ""
         for c in context:
+            i += 1
             if c['driver']['name'] == driver_name:
                 lap_time = c['laptime'].split('s')[0].split('m ')
                 lap_time = get_lap_time_sec(lap_time)
-                break
-        return [wr, lap_time]
+                rank = i
+        return [wr, lap_time, rank, i]
 
 
 def save_data(car_id):
@@ -49,9 +52,12 @@ def save_data(car_id):
         n = 1
         for t in tracks:
             data = [n] + [t[0]] + get_data(t[1], car_id)
-            if len(data) == 4:
+            if data[4] == "":
+                break
+            if len(data) == len(header):
                 writer.writerow(data)
-                print("Car: " + car_name + " | Track: " + t[0] + " saved successfully")
+                string = "Car: " + car_name + " | Track: " + t[0] + " saved successfully"
+                print(string)
                 n += 1
 
 
@@ -72,16 +78,20 @@ def get_car_name(car_id):
     page = requests.get("https://raw.githubusercontent.com/sector3studios/r3e-spectator-overlay/master/r3e-data.json")
     if page.ok:
         file = json.loads(page.text)
-        return file['cars'][str(car_id)]['Name']
+        if type(car_id) == str:
+            car_id = car_id.split("class-")[1]
+            return file['classes'][car_id]['Name']
+        else:
+            return file['cars'][str(car_id)]['Name']
 
 
 if __name__ == "__main__":
     tracks = get_all_tracks()
     try:
-        for car in car_class:
+        for car in car_ids:
             save_data(car)
         print("\nAll data has been saved successfully\n")
     except KeyboardInterrupt:
-        print("Program interrupted")
+        print("\nProgram interrupted\n")
     except PermissionError as e:
-        print("Error: " + e.filename + " already opened, please close it and retry")
+        print("\nError: " + e.filename + " already opened, please close it and retry\n")
