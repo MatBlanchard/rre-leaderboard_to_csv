@@ -15,6 +15,7 @@ cd rre-leaderboard_to_csv
 ```
 - Modify the raceroom.ini file with your parameters:
 ```
+raceroom_directory: [The root directory of your raceroom game]
 save_directory: [The directory you want to save the data]
 car_id_list: [The ids of the cars you want to save]
 player: [The player name that made the laptimes you want to save]
