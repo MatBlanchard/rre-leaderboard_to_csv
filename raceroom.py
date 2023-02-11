@@ -1,8 +1,13 @@
 import ast
+import pprint
+
 import requests
 import csv
 import json
 import configparser
+import logging
+logging.basicConfig(filename='Errors/log.txt', encoding='utf-8', level=logging.ERROR)
+
 config = configparser.RawConfigParser()
 config.read('raceroom.ini', encoding='utf-8')
 
@@ -11,6 +16,7 @@ save_directory = config.get('RRE', 'save_directory')
 car_ids = ast.literal_eval(config.get('RRE', 'car_id_list'))
 driver_name = config.get('RRE', 'player')
 header = ast.literal_eval(config.get('RRE', 'header'))
+finished_classes = ['GTR 3', 'Porsche 911 GT3 R (2019)', 'BMW M6 GT3', 'Ferrari 488 GT3 EVO 2020']
 count = 1500
 
 
@@ -26,32 +32,34 @@ def get_lap_time_sec(lap_time):
         return '{:.3f}'.format(float(lap_time[0])).replace('.', ',')
 
 
-def get_data(track_id, car_id):
-    url = "https://game.raceroom.com/leaderboard/listing/0?start=0&count=" + \
-          str(count) + "&track=" + str(track_id) + "&car_class=" + str(car_id)
-    page = requests.get(url, headers={"X-Requested-With": "XMLHttpRequest"})
-    nb_try = 1
-    while not page.ok:
-        if nb_try == 10:
-            raise Exception
+def get_data(track_id, car_id, car_name):
+    while True:
+        url = "https://game.raceroom.com/leaderboard/listing/0?start=0&count=" + \
+                  str(count) + "&track=" + str(track_id) + "&car_class=" + str(car_id)
         page = requests.get(url, headers={"X-Requested-With": "XMLHttpRequest"})
-        nb_try += 1
-    file = json.loads(page.text)
-    context = file['context']['c']['results']
-    if len(context) == 0:
-        return []
-    wr = context[0]['laptime']
-    wr = wr.split('s')[0].split('m ')
-    wr = get_lap_time_sec(wr)
-    lap_time = ""
-    i = 0
-    rank = ""
-    for c in context:
-        i += 1
-        if c['driver']['name'] == driver_name:
-            lap_time = c['laptime'].split('s')[0].split('m ')
-            lap_time = get_lap_time_sec(lap_time)
-            rank = i
+        file = json.loads(page.text)
+        context = file['context']['c']['results']
+        if len(context) == 0:
+            if car_name in finished_classes and track_id != 10274:
+                continue
+            else:
+                return []
+        wr = context[0]['laptime']
+        wr = wr.split('s')[0].split('m ')
+        wr = get_lap_time_sec(wr)
+        lap_time = ""
+        i = 0
+        rank = ""
+        for c in context:
+            i += 1
+            if c['driver']['name'] == driver_name:
+                lap_time = c['laptime'].split('s')[0].split('m ')
+                lap_time = get_lap_time_sec(lap_time)
+                rank = i
+        if car_name in finished_classes:
+            if not wr or not lap_time or not rank:
+                continue
+        break
     return [wr, lap_time, rank, i]
 
 
@@ -62,7 +70,7 @@ def save_data(json_file, car_id):
         writer.writerow(header)
         n = 1
         for t in tracks:
-            data = [n] + [t[0]] + get_data(t[1], car_id)
+            data = [n] + [t[0]] + get_data(t[1], car_id, car_name)
             if len(data) == len(header):
                 writer.writerow(data)
                 string = "Car: " + car_name + " | Track: " + t[0] + " saved successfully"
@@ -81,14 +89,11 @@ def get_all_tracks(json_file):
 
 
 def get_car_name(json_file, car_id):
-    page = requests.get("https://raw.githubusercontent.com/sector3studios/r3e-spectator-overlay/master/r3e-data.json")
-    if page.ok:
-        file = json.loads(page.text)
-        if type(car_id) == str:
-            car_id = car_id.split("class-")[1]
-            return file['classes'][car_id]['Name']
-        else:
-            return file['cars'][str(car_id)]['Name']
+    if type(car_id) == str:
+        car_id = car_id.split("class-")[1]
+        return json_file['classes'][car_id]['Name']
+    else:
+        return json_file['cars'][str(car_id)]['Name']
 
 
 if __name__ == "__main__":
