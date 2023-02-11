@@ -1,12 +1,8 @@
 import ast
-import pprint
-
 import requests
 import csv
 import json
 import configparser
-import logging
-logging.basicConfig(filename='Errors/log.txt', encoding='utf-8', level=logging.ERROR)
 
 config = configparser.RawConfigParser()
 config.read('raceroom.ini', encoding='utf-8')
